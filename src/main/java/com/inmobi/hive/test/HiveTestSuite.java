@@ -58,12 +58,16 @@ public class HiveTestSuite {
     
     public List<String> executeScript(String scriptFile, Map<String, String> params, List<String> excludes) {
         HiveScript hiveScript = new HiveScript(scriptFile, params, excludes);
+        return executeHQL(hiveScript.getStatements());
+    }
+
+    public List<String> executeHQL(List<String> hql){
         if (cluster == null) {
             throw new IllegalStateException("No active cluster to run script with");
         }
         List<String> results = null;
         try {
-            results = cluster.executeStatements(hiveScript.getStatements());
+            results = cluster.executeStatements(hql);
         } catch (HiveSQLException e) {
             throw new RuntimeException("Unable to execute script", e);
         }
